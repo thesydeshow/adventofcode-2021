@@ -39,8 +39,8 @@ In addition to horizontal position and depth, you'll also need to track a third 
 - `down X` **increases** your aim by `X` units.
 - `up X` **decreases** your aim by `X` units.
 - `forward X` does two things:
-- - It increases your horizontal position by `X` units.
-- - It increases your depth by your aim **multiplied by** `X`.
+  - It increases your horizontal position by `X` units.
+  - It increases your depth by your aim **multiplied by** `X`.
 
 Again note that since you're on a submarine, down and up do the opposite of what you might expect: "down" means aiming in the positive direction.
 
