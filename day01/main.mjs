@@ -23,7 +23,5 @@ const getArrayFromInput = async (fileName) => {
     return Promise.resolve(lines);
 };
 
-getPositiveDeltaCount([1,1,5,3,9,6]);     //should result in 2 -- 1->5, 3->9
-getPositiveDeltaCount([1,1,5,3,9,6], 3);  //should result in 3 -- 1+1+5=7->1+5+3=9, 9->5+3+9=17, 17->3+9+6=18
 getArrayFromInput('input.txt').then(result => getPositiveDeltaCount(result));
 getArrayFromInput('input.txt').then(result => getPositiveDeltaCount(result, 3));
