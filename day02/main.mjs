@@ -1,4 +1,4 @@
-import { setCourse } from './dive.mjs';
+import { setCourse, takeAim } from './dive.mjs';
 import { createReadStream } from 'fs';
 import { createInterface } from 'readline';
 import { join, dirname } from 'path';
@@ -25,4 +25,6 @@ const getArrayFromInput = async (fileName) => {
     return Promise.resolve(lines);
 };
 
+takeAim([['forward',5],['down',5],['forward',8],['up',3],['down',8],['forward',2]]); // expected to be 900 (15 * 60)
 getArrayFromInput('input.txt').then(results => setCourse(results));
+getArrayFromInput('input.txt').then(results => takeAim(results));
