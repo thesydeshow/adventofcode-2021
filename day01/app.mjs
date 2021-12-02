@@ -22,12 +22,28 @@ const getArrayFromInput = async (fileName) => {
     return Promise.resolve(lines);
 };
 
-const getPositiveDeltaCount = (data) => {
+const getPositiveDeltaCount = async (data, increment = 1) => {
+    const debug = data.length < 10;
     let positiveDeltas = 0;
-    for(let i = 1; i < data.length; i++) {
-        if(data[i-1] < data[i]) positiveDeltas++;
+    for(let i = increment; i < data.length; i++) {
+        let start = 0;
+        let end = 0;
+        for(let j = 0; j < increment; j++) {
+            start += data[i-j-1];
+            end += data[i-j];
+        }
+        if(i===increment) debug && console.log(start);
+        debug && console.log(end);
+        if(start < end){
+            positiveDeltas++;
+            debug && console.log('increased, was', start);
+        }
     }
-    console.log("positiveDeltas:", positiveDeltas );
+    console.log('positiveDeltas:', positiveDeltas );
+    console.log('------------------------------');
 }
 
+getPositiveDeltaCount([1,1,5,3,9,6]);     //should result in 2 -- 1->5, 3->9
+getPositiveDeltaCount([1,1,5,3,9,6], 3);  //should result in 3 -- 1+1+5=7->1+5+3=9, 9->5+3+9=17, 17->3+9+6=18
 getArrayFromInput('input.txt').then(result => getPositiveDeltaCount(result));
+getArrayFromInput('input.txt').then(result => getPositiveDeltaCount(result, 3));
