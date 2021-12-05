@@ -1,0 +1,17 @@
+{
+  "name": "day03",
+  "version": "1.0.0",
+  "description": "https://adventofcode.com/2021/day/3",
+  "main": "main.ts",
+  "scripts": {
+    "test": "jest",
+    "start": "tsc && node dist/main.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/preset-typescript": "^7.16.0",
+    "jest": "^27.4.3"
+  }
+}
