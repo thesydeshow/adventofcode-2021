@@ -1,0 +1,11 @@
+{
+  "name": "day05",
+  "version": "1.0.0",
+  "description": "https://adventofcode.com/2021/day/5",
+  "main": "main.ts",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "",
+  "license": "ISC"
+}
