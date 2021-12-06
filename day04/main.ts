@@ -91,31 +91,48 @@ function getSolution(remainingNumbers: number[], calledNumbers: number[]) {
     console.log('solution:', sum * lastNumber);
 }
 
-const lines = getLinesFromInput('sample.txt');
-lines.then(
+function solve(lines: string[], debug: boolean = false ) {
+    const numbersToCall = getNumbersToCall(lines);
+    debug && console.log('called numbers:', numbersToCall);
+    
+    const boards = getBoards(lines);
+    debug && console.log('boards:', boards);
+    
+    const rows = getRows(boards[0]);
+    debug && console.log('board[0].rows:', rows);
+    
+    const columns = getColumns(rows);
+    debug && console.log('board[0].columns:', columns);
+    
+    const allRows = getAllRows(boards);
+    debug && console.log('allRows:', allRows);
+    
+    const allColumns = getAllColumns(boards);
+    debug && console.log('allColumns:', allColumns);
+    
+    const noOneShouldBeWinning = getWinningBoard(allRows) || getWinningBoard(allColumns);
+    debug && console.log(noOneShouldBeWinning);
+    
+    callNumber(numbersToCall[0], allRows);
+    debug && console.log('call[0].allRows:', allRows);
+    
+    const [winner,calledNumbers] = callUntilWinner(numbersToCall, allRows, allColumns);
+    debug && console.log('winner:', winner);
+    
+    const winnerRemainingNumbers = getRemainingNumbers(winner);
+    debug && console.log('winnerRemainingNumbers:', winnerRemainingNumbers);
+    
+    getSolution(winnerRemainingNumbers, calledNumbers);
+}
+
+getLinesFromInput('sample.txt').then(
     result => {
-        const numbersToCall = getNumbersToCall(result);
-        console.log('called numbers:', numbersToCall);
-        const boards = getBoards(result);
-        console.log('boards:', boards);
-        const rows = getRows(boards[0]);
-        console.log('board[0].rows:', rows);
-        const columns = getColumns(rows);
-        console.log('board[0].columns:', columns);
-        const allRows = getAllRows(boards);
-        console.log('allRows:', allRows);
-        const allColumns = getAllColumns(boards);
-        console.log('allColumns:', allColumns);
-        const noOneShouldBeWinning = getWinningBoard(allRows) || getWinningBoard(allColumns);
-        console.log(noOneShouldBeWinning);
-        callNumber(numbersToCall[0], allRows);
-        console.log('call[0].allRows:', allRows);
-        const [winner,calledNumbers] = callUntilWinner(numbersToCall, allRows, allColumns);
-        const lastNumberCalled = calledNumbers[calledNumbers.length-1];
-        console.log('lastNumberCalled:', lastNumberCalled);
-        console.log('winner:', winner);
-        const winnerRemainingNumbers = getRemainingNumbers(winner);
-        console.log('winnerRemainingNumbers:', winnerRemainingNumbers);
-        getSolution(winnerRemainingNumbers, calledNumbers);
+        solve(result, true);
+    }
+)
+
+getLinesFromInput('input.txt').then(
+    result => {
+        solve(result);
     }
 )
