@@ -60,8 +60,15 @@ function getWinningBoard(boards: number[][][]): number[][] {
     return winningBoards[0];
 }
 
+function getLosingBoard(boards: number[][][]): [number[][],number] {
+    const losingBoards = boards.filter(x => !hasBoardWon(x));
+    if(!losingBoards.length) throw new Error("Unexpected lack of losers");
+    if(losingBoards.length === 1) return [losingBoards[0],boards.indexOf(losingBoards[0])];
+    return [losingBoards[-1],-1];
+
+}
+
 function callNumber(numberCalled: number, boards: number[][][]) {
-    // boards.map(x => x.map(x => x.filter( x => x != numberCalled)));
     boards.forEach(x =>
         x.forEach(y => {
             const i = y.indexOf(numberCalled);
@@ -71,13 +78,26 @@ function callNumber(numberCalled: number, boards: number[][][]) {
 }
 
 function callUntilWinner(numbersToCall: number[], allRows: number[][][], allColumns: number[][][]): [number[][], number[]] {
-    let winner: number[][];
     for(let i = 0; i < numbersToCall.length; i++) {
         callNumber(numbersToCall[i], allRows);
-        winner = getWinningBoard(allRows) || getWinningBoard(allColumns);
+        callNumber(numbersToCall[i], allColumns);
+        const winner = getWinningBoard(allRows) || getWinningBoard(allColumns);
         if(winner) return [winner, numbersToCall.slice(0, i+1)];
     }
     throw new Error("No winner");
+}
+
+function callUntilLoser(numbersToCall: number[], allRows: number[][][], allColumns: number[][][]): [number[][], number[][]] {
+    for(let i = 0; i < numbersToCall.length; i++) {
+        callNumber(numbersToCall[i], allRows);
+        callNumber(numbersToCall[i], allColumns);
+        
+        const [loserRows,j] = getLosingBoard(allRows);
+        if(loserRows) return [loserRows, allColumns[j]]
+        const [loserColumns,k] = getLosingBoard(allColumns);
+        if(loserColumns) return [allRows[k], loserColumns];
+    }
+    throw new Error("No loser");
 }
 
 function getRemainingNumbers(board: number[][]): number[] {
@@ -110,12 +130,6 @@ function solve(lines: string[], debug: boolean = false ) {
     const allColumns = getAllColumns(boards);
     debug && console.log('allColumns:', allColumns);
     
-    const noOneShouldBeWinning = getWinningBoard(allRows) || getWinningBoard(allColumns);
-    debug && console.log(noOneShouldBeWinning);
-    
-    callNumber(numbersToCall[0], allRows);
-    debug && console.log('call[0].allRows:', allRows);
-    
     const [winner,calledNumbers] = callUntilWinner(numbersToCall, allRows, allColumns);
     debug && console.log('winner:', winner);
     
@@ -128,11 +142,60 @@ function solve(lines: string[], debug: boolean = false ) {
 getLinesFromInput('sample.txt').then(
     result => {
         solve(result, true);
+        console.log('==============================');
     }
 )
 
 getLinesFromInput('input.txt').then(
     result => {
         solve(result);
+        console.log('==============================');
+    }
+)
+
+
+function unsolve(lines: string[], debug: boolean = false ) {
+    const numbersToCall = getNumbersToCall(lines);
+    debug && console.log('called numbers:', numbersToCall);
+    
+    const boards = getBoards(lines);
+    debug && console.log('boards:', boards);
+    
+    const rows = getRows(boards[0]);
+    debug && console.log('board[0].rows:', rows);
+    
+    const columns = getColumns(rows);
+    debug && console.log('board[0].columns:', columns);
+    
+    const allRows = getAllRows(boards);
+    debug && console.log('allRows:', allRows);
+    
+    const allColumns = getAllColumns(boards);
+    debug && console.log('allColumns:', allColumns);
+    
+    const [loserRows,loserColumns] = callUntilLoser(numbersToCall, allRows, allColumns);
+    debug && console.log('loserRows:', loserRows);
+    debug && console.log('loserColumns:', loserColumns);
+
+    const [loser,calledNumbers] = callUntilWinner(numbersToCall, [loserRows], [loserColumns]);
+    debug && console.log('loser:', loser);
+    
+    const loserRemainingNumbers = getRemainingNumbers(loser);
+    debug && console.log('loserRemainingNumbers:', loserRemainingNumbers);
+    
+    getSolution(loserRemainingNumbers, calledNumbers);
+}
+
+getLinesFromInput('sample.txt').then(
+    result => {
+        unsolve(result, true);
+        console.log('==============================');
+    }
+)
+
+getLinesFromInput('input.txt').then(
+    result => {
+        unsolve(result);
+        console.log('==============================');
     }
 )
