@@ -18,7 +18,7 @@ async function getLinesFromInput(fileName: string): Promise<string[]> {
     return Promise.resolve(lines);
 };
 
-function getCalledNumbers(lines: string[]): number[] {
+function getNumbersToCall(lines: string[]): number[] {
     return lines[0].split(',').map(x => Number(x));
 }
 
@@ -50,11 +50,52 @@ function getAllColumns(boards: string[][]): number[][][] {
     return boards.map(x => getColumns(getRows(x)));
 }
 
+function hasBoardWon(board: number[][]): boolean {
+    return !!board.filter(x => !x.length).length;
+}
+
+function getWinningBoard(boards: number[][][]): number[][] {
+    const winningBoards = boards.filter(x => hasBoardWon(x));
+    if(winningBoards.length > 1) throw new Error("Unexpected tie");
+    return winningBoards[0];
+}
+
+function callNumber(numberCalled: number, boards: number[][][]) {
+    // boards.map(x => x.map(x => x.filter( x => x != numberCalled)));
+    boards.forEach(x =>
+        x.forEach(y => {
+            const i = y.indexOf(numberCalled);
+            if(i !== -1) y.splice(i, 1);
+        })
+    );
+}
+
+function callUntilWinner(numbersToCall: number[], allRows: number[][][], allColumns: number[][][]): [number[][], number[]] {
+    let winner: number[][];
+    for(let i = 0; i < numbersToCall.length; i++) {
+        callNumber(numbersToCall[i], allRows);
+        winner = getWinningBoard(allRows) || getWinningBoard(allColumns);
+        if(winner) return [winner, numbersToCall.slice(0, i+1)];
+    }
+    throw new Error("No winner");
+}
+
+function getRemainingNumbers(board: number[][]): number[] {
+    const output: number[] = [];
+    return output.concat(...board);
+}
+
+function getSolution(remainingNumbers: number[], calledNumbers: number[]) {
+    const sum = remainingNumbers.reduce((previous, current) => previous + current);
+    const lastNumber = calledNumbers[calledNumbers.length-1];
+    console.log('solution:', sum * lastNumber);
+}
+
 const lines = getLinesFromInput('sample.txt');
 lines.then(
     result => {
-        const calledNumbers = getCalledNumbers(result);
-        console.log('called numbers:', calledNumbers);
+        const numbersToCall = getNumbersToCall(result);
+        console.log('called numbers:', numbersToCall);
         const boards = getBoards(result);
         console.log('boards:', boards);
         const rows = getRows(boards[0]);
@@ -65,5 +106,16 @@ lines.then(
         console.log('allRows:', allRows);
         const allColumns = getAllColumns(boards);
         console.log('allColumns:', allColumns);
+        const noOneShouldBeWinning = getWinningBoard(allRows) || getWinningBoard(allColumns);
+        console.log(noOneShouldBeWinning);
+        callNumber(numbersToCall[0], allRows);
+        console.log('call[0].allRows:', allRows);
+        const [winner,calledNumbers] = callUntilWinner(numbersToCall, allRows, allColumns);
+        const lastNumberCalled = calledNumbers[calledNumbers.length-1];
+        console.log('lastNumberCalled:', lastNumberCalled);
+        console.log('winner:', winner);
+        const winnerRemainingNumbers = getRemainingNumbers(winner);
+        console.log('winnerRemainingNumbers:', winnerRemainingNumbers);
+        getSolution(winnerRemainingNumbers, calledNumbers);
     }
 )
