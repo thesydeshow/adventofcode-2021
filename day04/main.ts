@@ -54,10 +54,9 @@ function hasBoardWon(board: number[][]): boolean {
     return !!board.filter(x => !x.length).length;
 }
 
-function getWinningBoard(boards: number[][][]): number[][] {
+function getIndexOfWinningBoard(boards: number[][][]): number {
     const winningBoards = boards.filter(x => hasBoardWon(x));
-    if(winningBoards.length > 1) throw new Error("Unexpected tie");
-    return winningBoards[0];
+    return boards.indexOf(winningBoards[0]);
 }
 
 function getLosingBoard(boards: number[][][]): [number[][],number] {
@@ -65,7 +64,6 @@ function getLosingBoard(boards: number[][][]): [number[][],number] {
     if(!losingBoards.length) throw new Error("Unexpected lack of losers");
     if(losingBoards.length === 1) return [losingBoards[0],boards.indexOf(losingBoards[0])];
     return [losingBoards[-1],-1];
-
 }
 
 function callNumber(numberCalled: number, boards: number[][][]) {
@@ -77,27 +75,28 @@ function callNumber(numberCalled: number, boards: number[][][]) {
     );
 }
 
-function callUntilWinner(numbersToCall: number[], allRows: number[][][], allColumns: number[][][]): [number[][], number[]] {
+function callUntilWinner(numbersToCall: number[], allRows: number[][][], allColumns: number[][][]): [number[][], number[], number] {
     for(let i = 0; i < numbersToCall.length; i++) {
         callNumber(numbersToCall[i], allRows);
         callNumber(numbersToCall[i], allColumns);
-        const winner = getWinningBoard(allRows) || getWinningBoard(allColumns);
-        if(winner) return [winner, numbersToCall.slice(0, i+1)];
+
+        const winnerIndex = Math.max(getIndexOfWinningBoard(allRows), getIndexOfWinningBoard(allColumns));
+        if(winnerIndex !== -1) return [allRows[winnerIndex], numbersToCall.slice(0, i+1), winnerIndex];
     }
     throw new Error("No winner");
 }
 
 function callUntilLoser(numbersToCall: number[], allRows: number[][][], allColumns: number[][][]): [number[][], number[][]] {
-    for(let i = 0; i < numbersToCall.length; i++) {
-        callNumber(numbersToCall[i], allRows);
-        callNumber(numbersToCall[i], allColumns);
-        
-        const [loserRows,j] = getLosingBoard(allRows);
-        if(loserRows) return [loserRows, allColumns[j]]
-        const [loserColumns,k] = getLosingBoard(allColumns);
-        if(loserColumns) return [allRows[k], loserColumns];
-    }
-    throw new Error("No loser");
+    do {
+        const [,,winnerIndex] = callUntilWinner(numbersToCall, allRows, allColumns);
+        if(winnerIndex === -1) throw new Error('Missing winners');
+        allRows.splice(winnerIndex, 1);
+        allColumns.splice(winnerIndex, 1);
+    } while(allRows.length > 1)
+    
+    if(!allRows.length) throw new Error("No loser");
+
+    return [allRows[0], allColumns[0]];
 }
 
 function getRemainingNumbers(board: number[][]): number[] {
@@ -118,12 +117,6 @@ function solve(lines: string[], debug: boolean = false ) {
     const boards = getBoards(lines);
     debug && console.log('boards:', boards);
     
-    const rows = getRows(boards[0]);
-    debug && console.log('board[0].rows:', rows);
-    
-    const columns = getColumns(rows);
-    debug && console.log('board[0].columns:', columns);
-    
     const allRows = getAllRows(boards);
     debug && console.log('allRows:', allRows);
     
@@ -139,34 +132,13 @@ function solve(lines: string[], debug: boolean = false ) {
     getSolution(winnerRemainingNumbers, calledNumbers);
 }
 
-getLinesFromInput('sample.txt').then(
-    result => {
-        solve(result, true);
-        console.log('==============================');
-    }
-)
-
-getLinesFromInput('input.txt').then(
-    result => {
-        solve(result);
-        console.log('==============================');
-    }
-)
-
-
 function unsolve(lines: string[], debug: boolean = false ) {
     const numbersToCall = getNumbersToCall(lines);
     debug && console.log('called numbers:', numbersToCall);
     
     const boards = getBoards(lines);
     debug && console.log('boards:', boards);
-    
-    const rows = getRows(boards[0]);
-    debug && console.log('board[0].rows:', rows);
-    
-    const columns = getColumns(rows);
-    debug && console.log('board[0].columns:', columns);
-    
+        
     const allRows = getAllRows(boards);
     debug && console.log('allRows:', allRows);
     
@@ -186,16 +158,41 @@ function unsolve(lines: string[], debug: boolean = false ) {
     getSolution(loserRemainingNumbers, calledNumbers);
 }
 
-getLinesFromInput('sample.txt').then(
-    result => {
-        unsolve(result, true);
-        console.log('==============================');
-    }
-)
 
-getLinesFromInput('input.txt').then(
-    result => {
-        unsolve(result);
-        console.log('==============================');
-    }
-)
+function part1sample() {
+    getLinesFromInput('sample.txt').then(
+        result => {
+            solve(result, true);
+            console.log('==============================');
+        }
+    );
+}
+
+function part1answer() {
+    getLinesFromInput('input.txt').then(
+        result => {
+            solve(result);
+            console.log('==============================');
+        }
+    );
+}
+
+function part2sample() {
+    getLinesFromInput('sample.txt').then(
+        result => {
+            unsolve(result, true);
+            console.log('==============================');
+        }
+    );
+}
+
+function part2answer() {
+    getLinesFromInput('input.txt').then(
+        result => {
+            unsolve(result, true);
+            console.log('==============================');
+        }
+    );
+}
+
+part2answer()
