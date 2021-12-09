@@ -40,37 +40,38 @@ function initMap(vectors: Vector[]): number[][] {
     return mapping;
 }
 
-function isHorizontal(vector: Vector): boolean {
-    return vector.p0.y === vector.p1.y;
+function isDiagonal(vector: Vector): boolean {
+    return vector.p0.x !== vector.p1.x && vector.p0.y !== vector.p1.y;
 }
 
-function isVertical(vector: Vector): boolean {
-    return vector.p0.x === vector.p1.x && vector.p0.y !== vector.p1.y;
-}
-
-function getMap(vectors: Vector[]): Promise<number[][]> {
+function getMap(vectors: Vector[], considerDiagonals: boolean = false): Promise<number[][]> {
     let mapping: number[][] = initMap(vectors);
 
-    vectors.filter(x => isHorizontal(x)).forEach(vector => {
+    vectors.filter(x => !isDiagonal(x)).forEach(vector => {
         const x = [vector.p0.x, vector.p1.x].sort((a,b) => a - b);
+        const y = [vector.p0.y, vector.p1.y].sort((a,b) => a - b);
         for(let i = x[0]; i <= x[1]; i++) {
-            mapping[i][vector.p0.y]++;
+            for(let j = y[0]; j <= y[1]; j++) {
+                mapping[i][j]++;
+            }
         }
     });
 
-    vectors.filter(x => isVertical(x)).forEach(vector => {
-        const y = [vector.p0.y, vector.p1.y].sort((a,b) => a - b);
-        for(let i = y[0]; i <= y[1]; i++) {
-            mapping[vector.p0.x][i]++;
-        }
-    });
+    if(considerDiagonals) {
+        vectors.filter(x => isDiagonal(x)).forEach(vector => {
+            const coords = [vector.p0, vector.p1].sort((a,b) => a.x - b.x);
+            for(let i = coords[0].x, j = coords[0].y; i <= coords[1].x; i++) {
+                mapping[i][j]++;
+                j += (coords[0].y > coords[1].y ? -1 : 1);
+            }
+        })
+    }
 
     return Promise.resolve(mapping);
 }
 
 function countPointsWithLines(mapping: number[][], minLines: number): Promise<number> {
     const matchingPoints = mapping.flat().filter(x => x >= minLines);
-    console.log('matchingPoints:', matchingPoints);
     return Promise.resolve(matchingPoints.length);
 }
 
@@ -78,7 +79,7 @@ function countPointsWithLines(mapping: number[][], minLines: number): Promise<nu
 getLinesFromInput('../day05/input.txt').then(result => {
     return getVectors(result);
 }).then(result => {
-    return getMap(result);
+    return getMap(result, true);
 }).then(result => {
     console.log(result);
     return countPointsWithLines(result, 2);
