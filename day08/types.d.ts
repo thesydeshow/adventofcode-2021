@@ -8,6 +8,7 @@ interface IIO {
 
 interface ISegment {
     rawValue: string;
+    decodedValue: string;
     readonly valueLength: number;
     readonly displayDigit: string;
 }
