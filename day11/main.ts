@@ -61,4 +61,19 @@ function part1(inputPath: string) {
     })
 }
 
-part1('../day11/input.txt')
+function part2(inputPath: string) {
+    getLinesFromInput(inputPath).then(result => {
+        let energyLevels = getEnergyLevels(result);
+        const octopi = energyLevels.flat().length;
+        let steps = 0;
+
+        do {
+            steps++;
+            tick(energyLevels);
+        } while(tock(energyLevels) < octopi)
+
+        console.log('answer:', steps);
+    })
+}
+
+part2('../day11/input.txt')
