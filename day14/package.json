@@ -1,0 +1,12 @@
+{
+  "name": "day14",
+  "version": "1.0.0",
+  "description": "https://adventofcode.com/2021/day/14",
+  "main": "main.js",
+  "scripts": {
+    "test": "jest",
+    "start": "tsc && node ../dist/day14/main.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
