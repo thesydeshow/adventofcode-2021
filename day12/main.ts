@@ -54,4 +54,7 @@ function part2(inputPath: string) {
     })
 }
 
-part2('sample-10.txt')
+export {
+    part1,
+    part2
+}
