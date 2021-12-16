@@ -37,11 +37,11 @@ function getMoreNodes(nodes: Dijkstra[][], scaleMultiplier: number = 5) {
 
 function decideDestination(nodes: Dijkstra[][], currentNode: Dijkstra): Dijkstra {
     // left
-    if(currentNode.x > 0) {
+    if(false && currentNode.x > 0) {
         const leftNode = nodes[currentNode.x-1][currentNode.y];
         if(!leftNode.visited && leftNode.distance > currentNode.distance + leftNode.riskLevel) {
             leftNode.distance = currentNode.distance + leftNode.riskLevel;
-            leftNode.previousNode = currentNode;
+            //leftNode.previousNode = currentNode;
         }
     }
 
@@ -50,16 +50,16 @@ function decideDestination(nodes: Dijkstra[][], currentNode: Dijkstra): Dijkstra
         const rightNode = nodes[currentNode.x+1][currentNode.y];
         if(!rightNode.visited && rightNode.distance > currentNode.distance + rightNode.riskLevel) {
             rightNode.distance = currentNode.distance + rightNode.riskLevel;
-            rightNode.previousNode = currentNode;
+            //rightNode.previousNode = currentNode;
         }
     }
 
     // up
-    if(currentNode.y > 0) {
+    if(false && currentNode.y > 0) {
         const upNode = nodes[currentNode.x][currentNode.y-1]; // what's upNode?
         if(!upNode.visited && upNode.distance > currentNode.distance + upNode.riskLevel) {
             upNode.distance = currentNode.distance + upNode.riskLevel;
-            upNode.previousNode = currentNode;
+            //upNode.previousNode = currentNode;
         }
     }
 
@@ -68,7 +68,7 @@ function decideDestination(nodes: Dijkstra[][], currentNode: Dijkstra): Dijkstra
         const downNode = nodes[currentNode.x][currentNode.y+1];
         if(!downNode.visited && downNode.distance > currentNode.distance + downNode.riskLevel) {
             downNode.distance = currentNode.distance + downNode.riskLevel;
-            downNode.previousNode = currentNode;
+            //downNode.previousNode = currentNode;
         }
     }
 
