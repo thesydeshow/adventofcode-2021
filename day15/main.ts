@@ -8,6 +8,37 @@ function getNodes(lines: string[]): Dijkstra[][] {
     return result;
 }
 
+function getMultipliedNodes(nodes: Dijkstra[][], multiplier: number): Dijkstra[][] {
+    return nodes.map(x => x.map(y => new Dijkstra(-1, -1, (y.riskLevel + multiplier - 1) % 9 + 1)));
+}
+
+function getMoreNodes(nodes: Dijkstra[][], scaleMultiplier: number = 5) {
+    let multipliedNodes = [];
+    const height = nodes.length;
+
+    for(let i = 0; i < scaleMultiplier * 2 - 1; i++) {
+        multipliedNodes.push(getMultipliedNodes(nodes, i));
+    }
+
+    for(let i = 0; i < scaleMultiplier; i++) {
+        for(let j = 0; j < scaleMultiplier; j++) {
+            if(i === 0 && j === 0) continue;
+            multipliedNodes[i+j].forEach((row,index) => {
+                const thisRow = i * height + index;
+                if(!nodes[thisRow]) {
+                    nodes[thisRow] = [];
+                }
+                nodes[thisRow].push(...row);
+            });
+        }
+    }
+
+    nodes.forEach((row,x) => row.forEach((node,y) => {
+        node.x = x;
+        node.y = y;
+    }));
+}
+
 function decideDestination(nodes: Dijkstra[][], currentNode: Dijkstra): Dijkstra {
     // left
     if(currentNode.x > 0) {
@@ -62,6 +93,14 @@ function traverseNodes(nodes: Dijkstra[][]): Dijkstra {
     return current;
 }
 
+/* -------------------------------------------------- */
+function debug(node: Dijkstra, nodePath: number[] = []): undefined {
+    nodePath.unshift(node.riskLevel);
+    if(node.previousNode) return debug(node.previousNode, nodePath);
+    console.log('nodePath:', nodePath);
+}
+
+/* -------------------------------------------------- */
 function part1(inputFilename: string) {
     getLinesFromInput(join('..', 'day15', inputFilename)).then(lines => {
         console.time('stopwatch');
@@ -73,4 +112,17 @@ function part1(inputFilename: string) {
     });
 }
 
-part1('input.txt');
+function part2(inputFilename: string) {
+    getLinesFromInput(join('..', 'day15', inputFilename)).then(lines => {
+        console.time('stopwatch');
+        const nodes = getNodes(lines);
+        getMoreNodes(nodes, 5);
+        const finalNode = traverseNodes(nodes);
+        debug(finalNode);
+        const answer = finalNode.distance;
+        console.log('answer:', answer);
+        console.timeEnd('stopwatch');
+    });
+}
+
+part2('sample.txt');
