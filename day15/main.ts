@@ -15,6 +15,7 @@ function getMultipliedNodes(nodes: Dijkstra[][], multiplier: number): Dijkstra[]
 function getMoreNodes(nodes: Dijkstra[][], scaleMultiplier: number = 5) {
     let multipliedNodes = [];
     const height = nodes.length;
+    const width = nodes[0].length;
 
     for(let i = 0; i < scaleMultiplier * 2 - 1; i++) {
         multipliedNodes.push(getMultipliedNodes(nodes, i));
@@ -23,20 +24,15 @@ function getMoreNodes(nodes: Dijkstra[][], scaleMultiplier: number = 5) {
     for(let i = 0; i < scaleMultiplier; i++) {
         for(let j = 0; j < scaleMultiplier; j++) {
             if(i === 0 && j === 0) continue;
-            multipliedNodes[i+j].forEach((row,index) => {
-                const thisRow = i * height + index;
+            multipliedNodes[i+j].forEach((row,rIndex) => {
+                const thisRow = i * height + rIndex;
                 if(!nodes[thisRow]) {
                     nodes[thisRow] = [];
                 }
-                nodes[thisRow].push(...row);
+                nodes[thisRow].push(...row.map((n,cIndex) => new Dijkstra(thisRow, j * width + cIndex, n.riskLevel)));
             });
         }
     }
-
-    nodes.forEach((row,x) => row.forEach((node,y) => {
-        node.x = x;
-        node.y = y;
-    }));
 }
 
 function decideDestination(nodes: Dijkstra[][], currentNode: Dijkstra): Dijkstra {
@@ -118,11 +114,11 @@ function part2(inputFilename: string) {
         const nodes = getNodes(lines);
         getMoreNodes(nodes, 5);
         const finalNode = traverseNodes(nodes);
-        debug(finalNode);
+        //debug(finalNode);
         const answer = finalNode.distance;
         console.log('answer:', answer);
         console.timeEnd('stopwatch');
     });
 }
 
-part2('sample.txt');
+part2('input.txt');
