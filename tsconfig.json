@@ -10,8 +10,10 @@
       "incremental": true,
   
       "strict": true,
+      "moduleResolution": "node",
       "esModuleInterop": true,
       "skipLibCheck": true,
       "forceConsistentCasingInFileNames": true
-    }
+    },
+    "exclude": ["**/*.test.ts", "**/assets"]
   }

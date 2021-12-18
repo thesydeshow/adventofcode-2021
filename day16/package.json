@@ -1,0 +1,12 @@
+{
+  "name": "day16",
+  "version": "1.0.0",
+  "description": "https://adventofcode.com/2021/day/16",
+  "main": "main.js",
+  "scripts": {
+    "test": "jest ./test/* --config ../jest.config.ts",
+    "start": "tsc && node ./dist/main.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
