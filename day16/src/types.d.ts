@@ -1,11 +1,12 @@
 interface IPacket {
     version: number;
     typeId: number;
+    bits: string;
 }
 
 interface ILiteralValuePacket extends IPacket {
     literalValue: string;
-    value: number;
+    readonly value: number;
 }
 
 interface IOperatorPacket extends IPacket {
