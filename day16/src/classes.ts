@@ -5,6 +5,9 @@ export class Packet implements IPacket {
     typeId: number;
     bits: string;
     leftoverBits: string;
+    get value(): number {
+        throw new ReferenceError();
+    }
 
     constructor(packetBits: string) {
         this.version = parseInt(packetBits.substring(0, 3), 2);
@@ -38,6 +41,27 @@ export class OperatorPacket extends Packet implements IOperatorPacket {
         this.bits = this.bits.substring(1);
         this.subPackets = [];
         initOperatorSubpackets(this);
+    }
+
+    get value(): number {
+        switch(this.typeId) {
+            case 0:
+                return this.subPackets.reduce((p,c) => p + c.value, 0);
+            case 1:
+                return this.subPackets.reduce((p,c) => p * c.value, 1);
+            case 2:
+                return Math.min(...this.subPackets.map(x => x.value));
+            case 3:
+                return Math.max(...this.subPackets.map(x => x.value));
+            case 5:
+                return this.subPackets[0].value > this.subPackets[1].value ? 1 : 0;
+            case 6:
+                return this.subPackets[0].value < this.subPackets[1].value ? 1 : 0;
+            case 7:
+                return this.subPackets[0].value === this.subPackets[1].value ? 1 : 0;
+            default:
+                throw new PacketTypeError(this.typeId);
+        }
     }
 }
 

@@ -81,9 +81,16 @@ function part1(hex: string): number {
     return getVersionSum(packet);
 }
 
+function part2(hex: string): number {
+    const bits = getBits(hex);
+    const packet = new OperatorPacket(bits);
+    return packet.value;
+}
+
 export {
     getBits,
     initLiteralValue,
     initOperatorSubpackets,
-    part1
+    part1,
+    part2
 }

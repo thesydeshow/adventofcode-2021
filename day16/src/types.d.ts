@@ -3,11 +3,11 @@ interface IPacket {
     typeId: number;
     bits: string;
     leftoverBits: string;
+    readonly value: number;
 }
 
 interface ILiteralValuePacket extends IPacket {
     literalValue: string;
-    readonly value: number;
 }
 
 interface IOperatorPacket extends IPacket {
