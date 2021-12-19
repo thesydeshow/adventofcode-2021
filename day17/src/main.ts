@@ -39,6 +39,7 @@ function getBoundVelocityWithMostSteps(target: number): number {
 }
 
 function getBoundVelocity(target: number, step: number): number {
+    //TODO: show the maths
     return target / step + 0.5 * step - 0.5;
 }
 
@@ -60,27 +61,42 @@ function getLowerBoundVelocity(target: number, step: number, cap: boolean) {
     return Math.ceil(getBoundVelocity(target, step));;
 }
 
-function getFeasibleStepsCountForHorizontal(minX: number, maxX: number, step: number): number {
-    return getUpperBoundVelocity(maxX, step, true) - getLowerBoundVelocity(minX, step, true) + 1;
+function getFeasibleHorizontalVelocities(minX: number, maxX: number, step: number): number[] {
+    const top = getUpperBoundVelocity(maxX, step, true);
+    const bottom = getLowerBoundVelocity(minX, step, true);
+    return Array.from(Array(top-bottom+1), (x,i) => i + bottom);
 }
 
-function getFeasibleStepsCountForVertical(minY: number, maxY: number, step: number): number {
-    return getUpperBoundVelocity(maxY, step, false) - getLowerBoundVelocity(minY, step, false) + 1;
+function getFeasibleVerticalVelocities(minY: number, maxY: number, step: number): number[] {
+    const top = getUpperBoundVelocity(maxY, step, false);
+    const bottom = getLowerBoundVelocity(minY, step, false);
+    return Array.from(Array(top-bottom+1), (x,i) => i + bottom);
 }
 
 function getMaxSteps(minY: number): number {
     return getMaxVerticalVelocity(minY) * 2 + 2;
 }
 
+function getDistinct(vectors: number[][]): number[][] {
+    return vectors.filter((x,i) => {
+        for(let j = 0; j < vectors.length; j++) {
+            if(vectors[j][0] === x[0] && vectors[j][1] === x[1]) {
+                return i === j;
+            }
+        }
+    });
+}
+
 function getFeasibleStartingVelocityCount(targetCoords: number[][]): number {
-    let answer = 0;
+    let answers: number[][] = [];
     for(let i = 1; i <= getMaxSteps(targetCoords[0][1]); i++) {
-        const h = getFeasibleStepsCountForHorizontal(targetCoords[0][0], targetCoords[1][0], i);
-        const v = getFeasibleStepsCountForVertical(targetCoords[0][1], targetCoords[1][1], i);
-        answer += h * v;
-        console.log(i,h,v,h*v,answer);
+        const hVelocities = getFeasibleHorizontalVelocities(targetCoords[0][0], targetCoords[1][0], i);
+        const vVelocities = getFeasibleVerticalVelocities(targetCoords[0][1], targetCoords[1][1], i);
+        const shrug = hVelocities.flatMap(x => vVelocities.map(y => [x, y]));
+        answers.push(...shrug);
     }
-    return answer;
+    answers = getDistinct(answers);
+    return answers.length;
 }
 
 function part2(input: string): number {
