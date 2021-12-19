@@ -60,7 +60,11 @@ function initOperatorSubpackets(packet: IOperatorPacket) {
             subpacketsBits = subpacket.leftoverBits;
         }
         subpacketsLeft--;
-    };
+    }
+
+    if(!subpacketsLeft) {
+        packet.leftoverBits = subpacketsBits;
+    }
 }
 
 function getVersionSum(packet: IPacket): number {
