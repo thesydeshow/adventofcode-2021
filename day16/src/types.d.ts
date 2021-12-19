@@ -2,6 +2,7 @@ interface IPacket {
     version: number;
     typeId: number;
     bits: string;
+    leftoverBits: string;
 }
 
 interface ILiteralValuePacket extends IPacket {

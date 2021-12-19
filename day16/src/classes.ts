@@ -1,14 +1,16 @@
-import { initLiteralValue, initObjectSubpackets } from './main'
+import { initLiteralValue, initOperatorSubpackets } from './main'
 
 export class Packet implements IPacket {
     version: number;
     typeId: number;
     bits: string;
+    leftoverBits: string;
 
     constructor(packetBits: string) {
         this.version = parseInt(packetBits.substring(0, 3), 2);
         this.typeId = parseInt(packetBits.substring(3, 6), 2);
         this.bits = packetBits.substring(6);
+        this.leftoverBits = '';
     }
 }
 
@@ -33,8 +35,9 @@ export class OperatorPacket extends Packet implements IOperatorPacket {
     constructor(packetBits: string) {
         super(packetBits);
         this.lengthTypeId = parseInt(this.bits.substring(0, 1));
+        this.bits = this.bits.substring(1);
         this.subPackets = [];
-        initObjectSubpackets(this);
+        initOperatorSubpackets(this);
     }
 }
 
