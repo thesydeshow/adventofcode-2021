@@ -1,3 +1,7 @@
+function getMaxVerticalVelocity(minY: number) {
+    return Math.floor(-.5 - minY);
+}
+
 function getMaxHeight(minY: number): number {
     /*
         Our parabola's formula is...
@@ -11,7 +15,7 @@ function getMaxHeight(minY: number): number {
                x = floor(-.5 - minY)
         Plugging x into the original parabola's formula will get us the distance dropped, which we can negate and get the max height possible.
     */
-   const x = Math.floor(-.5 - minY);
+   const x = getMaxVerticalVelocity(minY);
    const maxHeight = .5 * Math.pow(x, 2) + .5 * x;
    return maxHeight;
 }
@@ -29,7 +33,66 @@ function part1(input: string): number {
     return answer;
 }
 
+function getBoundVelocityWithMostSteps(target: number): number {
+    //a little quadradic formulaing
+    return (-1 + Math.pow(1 + 8 * target, 0.5)) / 2;
+}
+
+function getBoundVelocity(target: number, step: number): number {
+    return target / step + 0.5 * step - 0.5;
+}
+
+function getUpperBoundVelocity(target: number, step: number, cap: boolean): number {
+    let capAt = 0;
+    if(cap && step >= (capAt = Math.floor(getBoundVelocityWithMostSteps(target)))) {
+        return capAt;
+    }
+
+    return Math.floor(getBoundVelocity(target, step));
+}
+
+function getLowerBoundVelocity(target: number, step: number, cap: boolean) {
+    let capAt = 0;
+    if(cap && step >= (capAt = Math.ceil(getBoundVelocityWithMostSteps(target)))) {
+        return capAt;
+    }
+
+    return Math.ceil(getBoundVelocity(target, step));;
+}
+
+function getFeasibleStepsCountForHorizontal(minX: number, maxX: number, step: number): number {
+    return getUpperBoundVelocity(maxX, step, true) - getLowerBoundVelocity(minX, step, true) + 1;
+}
+
+function getFeasibleStepsCountForVertical(minY: number, maxY: number, step: number): number {
+    return getUpperBoundVelocity(maxY, step, false) - getLowerBoundVelocity(minY, step, false) + 1;
+}
+
+function getMaxSteps(minY: number): number {
+    return getMaxVerticalVelocity(minY) * 2 + 2;
+}
+
+function getFeasibleStartingVelocityCount(targetCoords: number[][]): number {
+    let answer = 0;
+    for(let i = 1; i <= getMaxSteps(targetCoords[0][1]); i++) {
+        const h = getFeasibleStepsCountForHorizontal(targetCoords[0][0], targetCoords[1][0], i);
+        const v = getFeasibleStepsCountForVertical(targetCoords[0][1], targetCoords[1][1], i);
+        answer += h * v;
+        console.log(i,h,v,h*v,answer);
+    }
+    return answer;
+}
+
+function part2(input: string): number {
+    const minAndMaxPoints = parseInput(input);
+    const answer = getFeasibleStartingVelocityCount(minAndMaxPoints);
+    return answer;
+}
+
+console.log(part2('target area: x=20..30, y=-10..-5'));
+
 export {
     getMaxHeight,
-    part1
+    part1,
+    part2
 }
