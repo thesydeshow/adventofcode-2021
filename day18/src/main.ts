@@ -117,8 +117,18 @@ function applyOrdering(snailfishNumber: Pair, startAt: number = 0, depth: number
     return startAt;
 }
 
+
+function reduce(snailfishNumber: Pair) {
+    let furtherReduced = false;
+    do {
+        furtherReduced = tryExplode(snailfishNumber);
+        furtherReduced = furtherReduced || trySplit(snailfishNumber);
+    } while(furtherReduced)
+}
+
 export {
     applyOrdering,
     tryExplode,
-    trySplit
+    trySplit,
+    reduce
 }

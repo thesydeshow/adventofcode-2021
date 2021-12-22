@@ -1,5 +1,5 @@
 import { Pair, NestedArray } from '../src/classes';
-import { tryExplode, trySplit } from '../src/main';
+import { reduce, tryExplode, trySplit } from '../src/main';
 
 const magnitudeCases: [NestedArray, number][] = [
     [[9,1], 29],
@@ -46,6 +46,20 @@ describe('split tests', () => {
     test.each(splitCases)('given %p as the snailfish number, returns split as %p', (argument, expectedResult) => {
         let snailfishNumber = new Pair(argument);
         trySplit(snailfishNumber);
+        expect(snailfishNumber).toEqual(new Pair(expectedResult));
+    })
+})
+
+const reduceCases: [NestedArray, NestedArray][] = [
+    [[[[[[4,3],4],4],[7,[[8,4],9]]],[1,1]], [[[[0,7],4],[[7,8],[6,0]]],[8,1]]],
+    [[[3,[2,[8,0]]],[9,[5,[4,[3,2]]]]], [[3,[2,[8,0]]],[9,[5,[7,0]]]]],
+    [[[[[1,3],[5,3]],[[1,3],[8,7]]],[[[4,9],[6,9]],[[8,2],[7,3]]]], [[[[1,3],[5,3]],[[1,3],[8,7]]],[[[4,9],[6,9]],[[8,2],[7,3]]]]]
+];
+
+describe('reduce tests', () => {
+    test.each(reduceCases)('given %p as the snailfish number, returns reduced number %p', (argument, expectedResult) => {
+        let snailfishNumber = new Pair(argument);
+        reduce(snailfishNumber);
         expect(snailfishNumber).toEqual(new Pair(expectedResult));
     })
 })
