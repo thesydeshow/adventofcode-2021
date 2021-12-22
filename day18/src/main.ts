@@ -126,9 +126,18 @@ function reduce(snailfishNumber: Pair) {
     } while(furtherReduced)
 }
 
+
+function add(snailfishNumber: Pair, addend: Pair): Pair {
+    let sum = new Pair([snailfishNumber.flat, addend.flat]);
+    reduce(sum);
+    return sum;
+}
+
+
 export {
     applyOrdering,
     tryExplode,
     trySplit,
-    reduce
+    reduce,
+    add
 }
