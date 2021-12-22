@@ -143,6 +143,17 @@ function part1(input: string[]): number {
     return total.magnitude;
 }
 
+function allSums(snailfishNumbers: Pair[]): [Pair, Pair, Pair][] {
+    const sumOfAllNumbies = snailfishNumbers.flatMap((x,i) => snailfishNumbers.filter((y,j) => i !== j).map(y => <[Pair,Pair,Pair]>[x, y, add(x, y)]));
+    return sumOfAllNumbies;
+}
+
+function part2(input: string[]): number {
+    const snailfishNumbies = input.map(x => new Pair(JSON.parse(x)));
+    const sums = allSums(snailfishNumbies);
+    const topSum = sums.sort((a,b) => b[2].magnitude - a[2].magnitude)[0];
+    return topSum[2].magnitude;
+}
 
 export {
     applyOrdering,
@@ -151,5 +162,6 @@ export {
     reduce,
     add,
     sum,
-    part1
+    part1,
+    part2
 }
