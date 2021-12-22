@@ -1,5 +1,5 @@
 import { Pair, NestedArray } from '../src/classes';
-import { tryExplode, trySplit, reduce, add } from '../src/main';
+import { tryExplode, trySplit, reduce, add, sum, part1 } from '../src/main';
 
 const magnitudeCases: [NestedArray, number][] = [
     [[9,1], 29],
@@ -32,7 +32,7 @@ const explodeCases: [NestedArray, NestedArray][] = [
 describe('explode tests', () => {
     test.each(explodeCases)('given %p as the snailfish number, returns exploded as %p', (argument, expectedResult) => {
         let snailfishNumber = new Pair(argument);
-        console.log(tryExplode(snailfishNumber));
+        tryExplode(snailfishNumber);
         expect(snailfishNumber).toEqual(new Pair(expectedResult));
     })
 })
@@ -82,5 +82,67 @@ describe('add tests', () => {
     test.each(addCases)('given %p and %p as snailfish numbers, returns sum of %p', (addend0, addend1, expectedResult) => {
         const result = add(new Pair(addend0), new Pair(addend1));
         expect(result).toEqual(new Pair(expectedResult));
+    })
+})
+
+const sumCases: [NestedArray[], NestedArray][] = [
+    [
+        [
+            [[[0,[4,5]],[0,0]],[[[4,5],[2,6]],[9,5]]],
+            [7,[[[3,7],[4,3]],[[6,3],[8,8]]]],
+            [[2,[[0,8],[3,4]]],[[[6,7],1],[7,[1,6]]]],
+            [[[[2,4],7],[6,[0,5]]],[[[6,8],[2,8]],[[2,1],[4,5]]]],
+            [7,[5,[[3,8],[1,4]]]],
+            [[2,[2,2]],[8,[8,1]]],
+            [2,9],
+            [1,[[[9,3],9],[[9,0],[0,7]]]],
+            [[[5,[7,4]],7],1],
+            [[[[4,2],2],6],[8,7]]
+        ],
+        [[[[8,7],[7,7]],[[8,6],[7,7]]],[[[0,7],[6,6]],[8,7]]]
+    ],
+    [
+        [
+            [[[0,[5,8]],[[1,7],[9,6]]],[[4,[1,2]],[[1,4],2]]],
+            [[[5,[2,8]],4],[5,[[9,9],0]]],
+            [6,[[[6,2],[5,6]],[[7,6],[4,7]]]],
+            [[[6,[0,7]],[0,9]],[4,[9,[9,0]]]],
+            [[[7,[6,4]],[3,[1,3]]],[[[5,5],1],9]],
+            [[6,[[7,3],[3,2]]],[[[3,8],[5,7]],4]],
+            [[[[5,4],[7,7]],8],[[8,3],8]],
+            [[9,3],[[9,9],[6,[4,9]]]],
+            [[2,[[7,7],7]],[[5,8],[[9,3],[0,2]]]],
+            [[[[5,2],5],[8,[3,7]]],[[5,[7,5]],[4,4]]]
+        ],
+        [[[[6,6],[7,6]],[[7,7],[7,0]]],[[[7,7],[7,7]],[[7,8],[9,9]]]]
+    ]
+];
+
+describe('sum tests', () => {
+    test.each(sumCases)('given %p as an array of snailfish numbers, returns sum of %p', (argument, expectedResult) => {
+        const result = sum(argument.map(x => new Pair(x)));
+        expect(result).toEqual(new Pair(expectedResult));
+    })
+})
+
+const part1Cases: [string[], number][] = [
+    [[
+        '[[[0,[5,8]],[[1,7],[9,6]]],[[4,[1,2]],[[1,4],2]]]',
+        '[[[5,[2,8]],4],[5,[[9,9],0]]]',
+        '[6,[[[6,2],[5,6]],[[7,6],[4,7]]]]',
+        '[[[6,[0,7]],[0,9]],[4,[9,[9,0]]]]',
+        '[[[7,[6,4]],[3,[1,3]]],[[[5,5],1],9]]',
+        '[[6,[[7,3],[3,2]]],[[[3,8],[5,7]],4]]',
+        '[[[[5,4],[7,7]],8],[[8,3],8]]',
+        '[[9,3],[[9,9],[6,[4,9]]]]',
+        '[[2,[[7,7],7]],[[5,8],[[9,3],[0,2]]]]',
+        '[[[[5,2],5],[8,[3,7]]],[[5,[7,5]],[4,4]]]'
+    ], 4140]
+];
+
+describe('part 1 tests', () => {
+    test.each(part1Cases)('given string array %p, returns magnitude of %p', (argument, expectedResult) => {
+        const result = part1(argument);
+        expect(result).toEqual(expectedResult);
     })
 })

@@ -1,4 +1,4 @@
-import { Pair } from "./classes";
+import { Pair } from './classes';
 
 function tryExplode(snailfishNumber: Pair): boolean {
     let explode = explodeGet(snailfishNumber);
@@ -133,11 +133,23 @@ function add(snailfishNumber: Pair, addend: Pair): Pair {
     return sum;
 }
 
+function sum(snailfishNumbers: Pair[]): Pair {
+    return snailfishNumbers.reduce((p,c) => add(p,c));
+}
+
+function part1(input: string[]): number {
+    const snailfishNumbies = input.map(x => new Pair(JSON.parse(x)));
+    const total = sum(snailfishNumbies);
+    return total.magnitude;
+}
+
 
 export {
     applyOrdering,
     tryExplode,
     trySplit,
     reduce,
-    add
+    add,
+    sum,
+    part1
 }
