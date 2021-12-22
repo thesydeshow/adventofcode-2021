@@ -65,8 +65,33 @@ function explodeAddRight(pair: Pair, right: number, rightIndex: number) {
 
 
 function trySplit(snailfishNumber: Pair): boolean {
+    const didSplit = splitDo(snailfishNumber);
+    if(didSplit) applyOrdering(snailfishNumber);
+    return didSplit;
+}
+
+function splitDo(pair: Pair): boolean {
+    if(typeof pair.left === 'number') {
+        if(pair.left >= 10) {
+            pair.left = new Pair([Math.floor(pair.left/2), Math.ceil(pair.left/2)]);
+            return true;
+        }
+    } else if(splitDo(pair.left)) {
+        return true;
+    }
+
+    if(typeof pair.right === 'number') {
+        if(pair.right >= 10) {
+            pair.right = new Pair([Math.floor(pair.right/2), Math.ceil(pair.right/2)]);
+            return true;
+        }
+    } else if(splitDo(pair.right)) {
+        return true;
+    }
+    
     return false;
 }
+
 
 function applyOrdering(snailfishNumber: Pair, startAt: number = 0, depth: number = 0): number {
     snailfishNumber.depth = depth;
