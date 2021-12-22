@@ -1,0 +1,12 @@
+{
+  "name": "day19",
+  "version": "1.0.0",
+  "description": "https://adventofcode.com/2021/day/19",
+  "main": "main.ts",
+  "scripts": {
+    "test": "jest ./day19/test/* --config ../jest.config.ts",
+    "start": "tsc && node ./dist/day19/src/part1.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
