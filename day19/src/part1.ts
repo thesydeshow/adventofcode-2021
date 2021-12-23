@@ -1,8 +1,12 @@
 import { getLinesFromInput } from '../../core/readInput'
-import { findScanner } from './main';
+import { findAllBeacons, collectScannerData } from './main';
 
-getLinesFromInput('../assets/sample.txt').then(result => {
+getLinesFromInput('../assets/input.txt').then(lines => {
     console.time();
-    console.log('answer:', )
+    const allBeacons = collectScannerData(lines);
+    const results = findAllBeacons(allBeacons);
+    console.log('beacons:', results.beacons);
+    console.log('scanners:', results.scanners);
+    console.log('answer:', results.beacons.length);
     console.timeEnd();
 })

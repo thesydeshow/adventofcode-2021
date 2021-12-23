@@ -34,6 +34,40 @@ function findScanner(knownBeacons: [number, number, number][], scannersBeacon: [
     return;
 }
 
+function findAllBeacons(scannersBeacons: [number, number, number][][]): {scanners: [number, number, number][], beacons: [number, number, number][]} {
+    let knownBeacons = scannersBeacons.shift() || [];
+    let knownScanners: [number, number, number][] = [[0,0,0]];
+
+    while(scannersBeacons.length) {
+        for(let i = scannersBeacons.length - 1; i >= 0; i--) {
+            const scanner = findScanner(knownBeacons, scannersBeacons[i]);
+            if(scanner) {
+                scannersBeacons.splice(i, 1);
+                knownScanners.push(scanner);
+            }
+        }
+    }
+
+    return {scanners: knownScanners, beacons: knownBeacons };
+}
+
+function collectScannerData(lines: string[]): [number, number, number][][] {
+    let data: [number, number, number][][] = [];
+    for(let line of lines) {
+        if(!line) continue;
+        if(line.startsWith('---')) {
+            data.push([]);
+            continue;
+        }
+        const coords = line.split(',').map(x => Number(x));
+        data[data.length-1].push([coords[0], coords[1], coords[2]]);
+    }
+    return data;
+}
+
+
 export {
-    findScanner
+    findScanner,
+    findAllBeacons,
+    collectScannerData
 }

@@ -1,4 +1,4 @@
-import { findScanner } from '../src/main';
+import { findScanner, findAllBeacons } from '../src/main';
 
 const scanner0: [number, number, number][] = [
     [404,-588,-901],
@@ -142,14 +142,27 @@ const scanner4: [number, number, number][] = [
     [30,-46,-14]
 ];
 
-describe('sample tests', () => {
+describe('part 1 tests', () => {
     let knownBeaacons = [...scanner0];
-    test('given scanner0 and scanner1 as inputs, returns location of scanner1', () => {
+    test('given scanners 0 and 1 as inputs, returns location of scanner1', () => {
         const result = findScanner(knownBeaacons, scanner1);
         expect(result).toEqual([68,-1246,-43]);
     })
-    test('given scanner0, scanner1, and scanner4 as inputs, returns location of scanner4', () => {
+    test('given scanners 0, 1, and 4 as inputs, returns location of scanner4', () => {
         const result = findScanner(knownBeaacons, scanner4);
         expect(result).toEqual([-20,-1133,1061]);
+    })
+    test('given scanners 0, 1, 4, and 2 as inputs, returns location of scanner2', () => {
+        const result = findScanner(knownBeaacons, scanner2);
+        expect(result).toEqual([1105,-1205,1229]);
+    })
+    test('given scanners 0, 1, 4, 2, and 3 as inputs, returns location of scanner3', () => {
+        const result = findScanner(knownBeaacons, scanner3);
+        expect(result).toEqual([-92,-2380,-20]);
+    })
+    
+    test('given scanners 0-4 as inputs, returns 79 beacons', () => {
+        const result = findAllBeacons([scanner0, scanner1, scanner2, scanner3, scanner4]);
+        expect(result.beacons.length).toEqual(79);
     })
 })
