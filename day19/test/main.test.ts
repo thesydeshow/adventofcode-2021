@@ -1,4 +1,4 @@
-import { findScanner, findAllBeacons } from '../src/main';
+import { findScanner, findAllBeacons, getManhattanDistance, getLongestManhattanDistance } from '../src/main';
 
 const scanner0: [number, number, number][] = [
     [404,-588,-901],
@@ -27,6 +27,7 @@ const scanner0: [number, number, number][] = [
     [-789,900,-551],
     [459,-707,401]
 ];
+const scanner0Location: [number, number, number] = [0,0,0];
 
 const scanner1: [number, number, number][] = [
     [686,422,578],
@@ -55,6 +56,7 @@ const scanner1: [number, number, number][] = [
     [755,-354,-619],
     [553,889,-390]
 ];
+const scanner1Location: [number, number, number] = [68,-1246,-43];
 
 const scanner2: [number, number, number][] = [
     [649,640,665],
@@ -84,6 +86,7 @@ const scanner2: [number, number, number][] = [
     [-742,-814,-386],
     [577,-820,562]
 ];
+const scanner2Location: [number, number, number] = [1105,-1205,1229];
 
 const scanner3: [number, number, number][] = [
     [-589,542,597],
@@ -112,6 +115,7 @@ const scanner3: [number, number, number][] = [
     [614,-800,639],
     [595,780,-596]
 ];
+const scanner3Location: [number, number, number] = [-92,-2380,-20];
 
 const scanner4: [number, number, number][] = [
     [727,592,562],
@@ -141,28 +145,44 @@ const scanner4: [number, number, number][] = [
     [-652,-548,-490],
     [30,-46,-14]
 ];
+const scanner4Location: [number, number, number] = [-20,-1133,1061];
 
 describe('part 1 tests', () => {
     let knownBeaacons = [...scanner0];
     test('given scanners 0 and 1 as inputs, returns location of scanner1', () => {
         const result = findScanner(knownBeaacons, scanner1);
-        expect(result).toEqual([68,-1246,-43]);
+        expect(result).toEqual(scanner1Location);
     })
     test('given scanners 0, 1, and 4 as inputs, returns location of scanner4', () => {
         const result = findScanner(knownBeaacons, scanner4);
-        expect(result).toEqual([-20,-1133,1061]);
+        expect(result).toEqual(scanner4Location);
     })
     test('given scanners 0, 1, 4, and 2 as inputs, returns location of scanner2', () => {
         const result = findScanner(knownBeaacons, scanner2);
-        expect(result).toEqual([1105,-1205,1229]);
+        expect(result).toEqual(scanner2Location);
     })
     test('given scanners 0, 1, 4, 2, and 3 as inputs, returns location of scanner3', () => {
         const result = findScanner(knownBeaacons, scanner3);
-        expect(result).toEqual([-92,-2380,-20]);
+        expect(result).toEqual(scanner3Location);
     })
     
     test('given scanners 0-4 as inputs, returns 79 beacons', () => {
         const result = findAllBeacons([scanner0, scanner1, scanner2, scanner3, scanner4]);
         expect(result.beacons.length).toEqual(79);
+    })
+})
+
+describe('part 2 tests', () => {
+    test('given scanners 2 and 3 as inputs, returns distance of 3621', () => {
+        const result = getManhattanDistance(scanner2Location, scanner3Location);
+        expect(result).toEqual(3621);
+    })
+    test('given scanners 3 and 2 as inputs, returns distance of 3621', () => {
+        const result = getManhattanDistance(scanner3Location, scanner2Location);
+        expect(result).toEqual(3621);
+    })
+    test('given scanners 0-4 as inputs, returns distance of 3621', () => {
+        const result = getLongestManhattanDistance([scanner0Location, scanner1Location, scanner2Location, scanner3Location, scanner4Location]);
+        expect(result).toEqual(3621);
     })
 })

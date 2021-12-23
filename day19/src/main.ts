@@ -34,6 +34,21 @@ function findScanner(knownBeacons: [number, number, number][], scannersBeacon: [
     return;
 }
 
+function getManhattanDistance(from: [number, number, number], to: [number, number, number]): number {
+    return Math.abs(from[0] - to[0]) + Math.abs(from[1] - to[1]) + Math.abs(from[2] - to[2]);
+}
+
+function getLongestManhattanDistance(scanners: [number, number, number][]): number {
+    let distances = [];
+    for(let i = 0; i < scanners.length - 1; i++) {
+        for(let j = i + 1; j < scanners.length; j++) {
+            distances.push(getManhattanDistance(scanners[i], scanners[j]));
+        }
+    }
+
+    return distances.sort((a,b) => b - a)[0];
+}
+
 function findAllBeacons(scannersBeacons: [number, number, number][][]): {scanners: [number, number, number][], beacons: [number, number, number][]} {
     let knownBeacons = scannersBeacons.shift() || [];
     let knownScanners: [number, number, number][] = [[0,0,0]];
@@ -69,5 +84,7 @@ function collectScannerData(lines: string[]): [number, number, number][][] {
 export {
     findScanner,
     findAllBeacons,
-    collectScannerData
+    collectScannerData,
+    getManhattanDistance,
+    getLongestManhattanDistance
 }
