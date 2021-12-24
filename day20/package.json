@@ -5,7 +5,7 @@
   "main": "main.ts",
   "scripts": {
     "test": "jest ./day20/test/* --config ../jest.config.ts",
-    "start": "tsc && node ./dist/day20/src/part1.js"
+    "start": "tsc && node ./dist/day20/src/part2.js"
   },
   "author": "",
   "license": "ISC"

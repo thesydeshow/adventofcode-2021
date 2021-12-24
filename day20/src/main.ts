@@ -54,6 +54,14 @@ export function enhance(image: (0|1)[][], algorithm: string, pads: number = 2, t
     return enhancedImage;
 }
 
+export function enhanceEnhanceEnhance(image: (0|1)[][], algorithm: string, iterations: number): (0|1)[][] {
+    enhance(image, algorithm, iterations * 2);
+    for(let i = 0; i < iterations; i++) {
+        image = enhance(image, algorithm, 0, 1);
+    }
+    return image;
+}
+
 export function lightPixelCount(image: (0|1)[][]): number {
     return image.flat().reduce((p: number,c) => p + c, 0);
 }
