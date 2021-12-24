@@ -2,6 +2,7 @@ import { createReadStream } from 'fs';
 import { createInterface } from 'readline';
 import { join } from 'path';
 import { once } from 'events';
+import { flipMatrix } from '../core/twoDimensionalUtils';
 
 async function getLinesFromInput(fileName: string): Promise<string[]> {
     const rl = createInterface({
@@ -39,7 +40,7 @@ function getRows(board: string[]): number[][] {
 }
 
 function getColumns(rows: number[][]): number[][] {
-    return rows[0].map((x,i) => rows.map(x => x[i]));
+    return flipMatrix(rows);
 }
 
 function getAllRows(boards: string[][]): number[][][] {

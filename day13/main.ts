@@ -1,4 +1,5 @@
 import { getLinesFromInput } from '../core/readInput';
+import { flipMatrix } from '../core/twoDimensionalUtils';
 import { join } from 'path';
 
 function getDots(lines: string[]): boolean[][]{
@@ -32,10 +33,6 @@ function doFold(dots: boolean[][], fold: Fold): boolean[][] {
     }
 
     return newDots;
-}
-
-function flipMatrix(matrix: boolean[][]): boolean[][]{
-    return matrix[0].map((x,i) => matrix.map(x => x[i]));
 }
 
 function part1(inputFilename: string) {

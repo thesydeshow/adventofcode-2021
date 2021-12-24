@@ -1,7 +1,11 @@
 import { getLinesFromInput } from '../../core/readInput';
+import { parseInput, enhance, lightPixelCount, print } from './main';
 
-getLinesFromInput('../assets/sample.txt').then(lines => {
+getLinesFromInput('../assets/input.txt').then(lines => {
     console.time();
-    console.log('answer:', );
+    const inputs = parseInput(lines);
+    const enhanced = enhance(inputs.image, inputs.algorithm, 1000, 1);
+    const enchancedEnhanced = enhance(enhanced, inputs.algorithm, 0, 0);
+    console.log('answer:', lightPixelCount(enchancedEnhanced));
     console.timeEnd();
 })
