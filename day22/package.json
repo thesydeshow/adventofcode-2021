@@ -1,0 +1,12 @@
+{
+  "name": "day22",
+  "version": "1.0.0",
+  "description": "https://adventofcode.com/2021/day/22",
+  "main": "main.ts",
+  "scripts": {
+    "test": "jest ./day22/test/* --config ../jest.config.ts",
+    "start": "tsc && node ./dist/day22/src/part1.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
