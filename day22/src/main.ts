@@ -1,10 +1,23 @@
-export function doReboot(commands: string[], regionRange: [number, number]): boolean[][][] {
-    const cleanSlate = prepReboot(regionRange);
+export function doReboot(commandLines: string[], regionRange: [number, number] | undefined = undefined): boolean[][][] {
+    const commands = commandLines.map(line => {
+        const matches = line.match(/(on|off) x=(\-?\d+)\.\.(\-?\d+),y=(\-?\d+)\.\.(\-?\d+),z=(\-?\d+)\.\.(\-?\d+)/) || [];
+        return {
+            newState: matches[1] === 'on',
+            xRange: <[number, number]>[Number(matches[2]), Number(matches[3])],
+            yRange: <[number, number]>[Number(matches[4]), Number(matches[5])],
+            zRange: <[number, number]>[Number(matches[6]), Number(matches[7])]
+        };
+    });
+    
+    const cleanSlate = regionRange ? prepReboot(regionRange) : prepReboot(
+        [Math.min(...commands.map(x => x.xRange[0])), Math.max(...commands.map(x => x.xRange[0]))],
+        [Math.min(...commands.map(x => x.yRange[0])), Math.max(...commands.map(x => x.yRange[0]))],
+        [Math.min(...commands.map(x => x.zRange[0])), Math.max(...commands.map(x => x.zRange[0]))]);
     let region = cleanSlate.region;
     for(let i = 0; i < commands.length; i++) {
-        const matches = commands[i].match(/(on|off) x=(\-?\d+)\.\.(\-?\d+),y=(\-?\d+)\.\.(\-?\d+),z=(\-?\d+)\.\.(\-?\d+)/) || [];
-        changeCuboidState(region, matches[1] === 'on', [Number(matches[2]), Number(matches[3])], [Number(matches[4]), Number(matches[5])], [Number(matches[6]), Number(matches[7])], cleanSlate.offSets);
+        changeCuboidState(region, commands[i].newState, commands[i].xRange, commands[i].yRange, commands[i].zRange, cleanSlate.offSets);
     }
+    
     return region;
 }
 
@@ -16,17 +29,18 @@ function changeCuboidState(region: boolean[][][], newState: boolean, xRange: [nu
     for(let x = xRange[0]; x <= xRange[1]; x++) {
         for(let y = yRange[0]; y <= yRange[1]; y++) {
             for(let z = zRange[0]; z <= zRange[1]; z++) {
-                if(region[x] === undefined || region[x][y] === undefined || region[x][y][z] === undefined) throw new Error('this should never happen');
                 region[x][y][z] = newState;
             }
         }
     }
 }
 
-function prepReboot(regionRange: [number, number]): {region: boolean[][][], offSets: [number, number, number]} {
-    const size = regionRange[1] - regionRange[0] + 1;
-    const region = [...Array(size)].map(x => [...Array(size)].map(x => [...Array(size)].fill(false)));
-    return {region, offSets: [0 - regionRange[0], 0 - regionRange[0], 0 - regionRange[0]]};
+function prepReboot(xRange: [number, number], yRange: [number, number] = xRange, zRange: [number, number] = xRange): {region: boolean[][][], offSets: [number, number, number]} {
+    const xSize = xRange[1] - xRange[0] + 1;
+    const ySize = yRange[1] - yRange[0] + 1;
+    const zSize = zRange[1] - zRange[0] + 1;
+    const region = [...Array(xSize)].map(x => [...Array(ySize)].map(x => [...Array(zSize)]));
+    return {region, offSets: [0 - xRange[0], 0 - yRange[0], 0 - zRange[0]]};
 }
 
 export function countCubes(region: boolean[][][]): number {
