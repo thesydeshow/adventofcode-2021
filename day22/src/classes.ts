@@ -41,7 +41,7 @@ export class Cuboid implements ICuboid {
             Math.max(this.y0, cuboid.y0), Math.min(this.y1, cuboid.y1),
             Math.max(this.z0, cuboid.z0), Math.min(this.z1, cuboid.z1)
         );
-        let splits = [overlap];
+        let splits = [];
         if(this.x0 < cuboid.x0) {
             splits.push(new Cuboid(this.x0, cuboid.x0 - 1, this.y0, this.y1, this.z0, this.z1));
         }
@@ -64,8 +64,6 @@ export class Cuboid implements ICuboid {
             splits.push(
                 new Cuboid(overlap.x0, overlap.x1, overlap.y0, overlap.y1, cuboid.z1 + 1, this.z1));
         }
-
-        if(this.area !== splits.reduce((p,c) => p + c.area, 0)) throw new Error('Something doesn\'t add up');
         return splits;
     }
 }

@@ -52,12 +52,6 @@ export function doBigBoyReboot(commandLines: string[]): number {
 
     let poweredOn: Cuboid[] = [];
     for(let i = 0; i < commands.length; i++) {
-        for(let j = poweredOn.length - 1; j >= 0; j--) {
-            if(commands[i].cuboid.envelops(poweredOn[j])) {
-                poweredOn.splice(j, 1);
-            }
-        }
-
         if(!commands[i].newState) continue;
 
         let theseCuboids: Cuboid[] = [commands[i].cuboid];
