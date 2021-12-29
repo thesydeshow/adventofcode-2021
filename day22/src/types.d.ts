@@ -8,5 +8,6 @@ interface ICuboid {
 
     readonly area: number;
     intersects(cuboid: ICuboid): boolean;
+    envelops(cuboid: ICuboid): boolean;
     split(cuboid: ICuboid): ICuboid[];
 }
