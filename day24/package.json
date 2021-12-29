@@ -1,0 +1,12 @@
+{
+  "name": "day24",
+  "version": "1.0.0",
+  "description": "https://adventofcode.com/2021/day/24",
+  "main": "main.ts",
+  "scripts": {
+    "test": "jest ./day24/test/* --config ../jest.config.ts",
+    "start": "tsc && node ./dist/day24/src/part1.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
